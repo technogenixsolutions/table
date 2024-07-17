@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Bank Data Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/53025ffb8e.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        .submenu ul {
+            display: none;
+        }
+
+        .hidden-column {
+            display: none;
+        }
+
+        .sortable {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-4">Bank Data Table</h2>
+    <div class="w-[400px] rounded-lg mb-4 rounded-md text-center" style="border-radius: 10px">
+        <ul class="flex items-center gap-2 bg-gray-400 py-2 px-1 text-white text-center justify-center">
+            <li class="cursor-pointer px-2 hover:bg-black rounded-md" id="copy">Copy</li>
+            <li class="cursor-pointer px-2 hover:bg-black rounded-md" id="excel">Excel</li>
+            <li class="cursor-pointer px-2 hover:bg-black rounded-md" id="pdf">PDF</li>
+            <li class="cursor-pointer px-2 hover:bg-black rounded-md" id="print">Print</li>
+            <li class="cursor-pointer relative submenu px-2 hover:bg-black rounded-md" id="column-visibility">Column Visibility
+                <ul class="bg-gray-300 text-black mt-1 rounded-md absolute mt-[8px] w-full text-left">
+                    <li class="px-2 py-1 cursor-pointer" data-column="sl">SL</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="bank">Bank</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="name">Name</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="account-type">Account Type</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="account-holder-name">Account Holder Name</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="bank-name">Bank Name</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="account-number">Account Number</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="issue-date">Issue Date</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="amount">Amount</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="cheque-no">Cheque No</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="data">Date</li>
+                    <li class="px-2 py-1 cursor-pointer" data-column="status">Status</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="text-right mb-5">
+        <label for="search">Search</label>
+        <input type="text" id="search" class="border border-gray-400 py-1 px-2"/>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table id="bank-table" class="min-w-full bg-white border border-gray-300">
+            <thead class="border-b border-t border-gray-400 mb-2">
+            <tr>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-sl sortable">SL <i class="fa-solid fa-sort-down"></i>
+                </th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-bank sortable">Bank <i class="fa-solid fa-sort-down"></i>
+                </th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-name sortable">Name <i class="fa-solid fa-sort-down"></i>
+                </th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-account-type sortable">Account Type <i
+                        class="fa-solid fa-sort-down"></i></th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-account-holder-name sortable">Account Holder Name
+                    <i class="fa-solid fa-sort-down"></i></th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-bank-name sortable">Bank Name <i
+                        class="fa-solid fa-sort-down"></i></th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-account-number sortable">Account Number <i
+                        class="fa-solid fa-sort-down"></i></th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-issue-date sortable">Issue Date <i
+                        class="fa-solid fa-sort-down"></i></th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-amount sortable">Amount <i class="fa-solid fa-sort-down"></i>
+                </th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-cheque-no sortable">Cheque No <i
+                        class="fa-solid fa-sort-down"></i></th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-data sortable">Data <i class="fa-solid fa-sort-down"></i>
+                </th>
+                <th class="py-2 px-4 whitespace-nowrap text-left column-status sortable">Status <i class="fa-solid fa-sort-down"></i>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="border-b border-t border-gray-400">
+                <td class="py-2 px-4 whitespace-nowrap column-sl">1</td>
+                <td class="py-2 px-4 whitespace-nowrap column-bank">Padma Bank</td>
+                <td class="py-2 px-4 whitespace-nowrap column-name">kabir</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-type">By Bank Account md asif</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-holder-name">By Bank Account</td>
+                <td class="py-2 px-4 whitespace-nowrap column-bank-name">md asif</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-number">DBD</td>
+                <td class="py-2 px-4 whitespace-nowrap column-issue-date">15-Jan-2024</td>
+                <td class="py-2 px-4 whitespace-nowrap column-amount">516</td>
+                <td class="py-2 px-4 whitespace-nowrap column-cheque-no">3530021</td>
+                <td class="py-2 px-4 whitespace-nowrap column-data">01-Jan-2024</td>
+                <td class="py-2 px-4 whitespace-nowrap column-status">
+                    <span class="bg-[#34d399] text-[#ffffff] py-[3px] px-[8px] rounded-md cursor-pointer">Completed</span>
+                </td>
+            </tr>
+
+            <tr class="border-b border-t border-gray-400">
+                <td class="py-2 px-4 whitespace-nowrap column-sl">2</td>
+                <td class="py-2 px-4 whitespace-nowrap column-bank">Padma Bank</td>
+                <td class="py-2 px-4 whitespace-nowrap column-name">rubel</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-type">By Bank Account</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-holder-name">By Bank Account</td>
+                <td class="py-2 px-4 whitespace-nowrap column-bank-name">md rakib</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-number">BDBL</td>
+                <td class="py-2 px-4 whitespace-nowrap column-issue-date">15-Jan-2024</td>
+                <td class="py-2 px-4 whitespace-nowrap column-amount">516</td>
+                <td class="py-2 px-4 whitespace-nowrap column-cheque-no">3530021</td>
+                <td class="py-2 px-4 whitespace-nowrap column-data">01-Jan-2024</td>
+                <td class="py-2 px-4 whitespace-nowrap column-status">
+                    <span class="bg-[#34d399] text-[#ffffff] py-[3px] px-[8px] rounded-md cursor-pointer">Completed</span>
+                </td>
+            </tr>
+
+            <tr class="border-b border-t border-gray-400">
+                <td class="py-2 px-4 whitespace-nowrap column-sl">3</td>
+                <td class="py-2 px-4 whitespace-nowrap column-bank">UCB Bank</td>
+                <td class="py-2 px-4 whitespace-nowrap column-name">md asif</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-type">By Bank Account</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-holder-name">By Bank Account</td>
+                <td class="py-2 px-4 whitespace-nowrap column-bank-name">md asif</td>
+                <td class="py-2 px-4 whitespace-nowrap column-account-number">BDBL</td>
+                <td class="py-2 px-4 whitespace-nowrap column-issue-date">15-Jan-2024</td>
+                <td class="py-2 px-4 whitespace-nowrap column-amount">516</td>
+                <td class="py-2 px-4 whitespace-nowrap column-cheque-no">3530021</td>
+                <td class="py-2 px-4 whitespace-nowrap column-data">01-Jan-2024</td>
+                <td class="py-2 px-4 whitespace-nowrap column-status">
+                    <span class="bg-[#34d399] text-[#ffffff] py-[3px] px-[8px] rounded-md cursor-pointer">Completed</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const submenu = document.querySelector('.submenu');
+        const submenuList = submenu.querySelector('ul');
+
+        submenu.addEventListener('click', () => {
+            submenuList.style.display = submenuList.style.display === 'block' ? 'block' : 'block';
+        });
+        document.addEventListener('click', (event) => {
+            if (!submenu.contains(event.target)) {
+                submenuList.style.display = 'none';
+            }
+        });
+        const searchInput = document.getElementById('search');
+        const table = document.getElementById('bank-table');
+        const rows = table.getElementsByTagName('tr');
+
+        searchInput.addEventListener('input', function () {
+            const filter = searchInput.value.toLowerCase();
+
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let match = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j].textContent.toLowerCase().includes(filter)) {
+                        match = true;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = match ? '' : 'none';
+            }
+        });
+
+        document.querySelectorAll('.submenu ul li').forEach((item) => {
+            item.addEventListener('click', function () {
+                const columnClass = `column-${this.getAttribute('data-column')}`;
+                const columnCells = document.querySelectorAll(`.${columnClass}`);
+
+                columnCells.forEach((cell) => {
+                    cell.classList.toggle('hidden-column');
+                });
+            });
+        });
+
+        document.querySelectorAll('.sortable').forEach((header) => {
+            header.addEventListener('click', () => {
+                const table = header.closest('table');
+                const tbody = table.querySelector('tbody');
+                const columnIndex = Array.from(header.parentNode.children).indexOf(header);
+                const rowsArray = Array.from(tbody.querySelectorAll('tr'));
+
+                const isAscending = header.classList.contains('asc');
+                header.classList.toggle('asc', !isAscending);
+                header.classList.toggle('desc', isAscending);
+
+                rowsArray.sort((rowA, rowB) => {
+                    const cellA = rowA.children[columnIndex].textContent.trim();
+                    const cellB = rowB.children[columnIndex].textContent.trim();
+
+                    if (!isNaN(cellA) && !isNaN(cellB)) {
+                        return isAscending ? cellA - cellB : cellB - cellA;
+                    }
+
+                    return isAscending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                });
+
+                tbody.append(...rowsArray);
+            });
+        });
+
+        document.getElementById('copy').addEventListener('click', () => {
+            const cloneTable = table.cloneNode(true);
+            cloneTable.querySelectorAll('.hidden-column').forEach((cell) => cell.remove());
+
+            const range = document.createRange();
+            range.selectNode(cloneTable);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            alert('Table copied to clipboard');
+        });
+
+        document.getElementById('excel').addEventListener('click', () => {
+            const cloneTable = table.cloneNode(true);
+            cloneTable.querySelectorAll('.hidden-column').forEach((cell) => cell.remove());
+
+            const workbook = XLSX.utils.table_to_book(cloneTable);
+            XLSX.writeFile(workbook, 'table.xlsx');
+        });
+
+        document.getElementById('pdf').addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const cloneTable = table.cloneNode(true);
+            cloneTable.querySelectorAll('.hidden-column').forEach((cell) => cell.remove());
+
+            doc.autoTable({ html: cloneTable });
+            doc.save('table.pdf');
+        });
+
+        document.getElementById('print').addEventListener('click', () => {
+            const cloneTable = table.cloneNode(true);
+            cloneTable.querySelectorAll('.hidden-column').forEach((cell) => cell.remove());
+
+            const newWin = window.open('');
+            newWin.document.write(cloneTable.outerHTML);
+            newWin.print();
+            newWin.close();
+        });
+    });
+</script>
+</body>
+</html>
